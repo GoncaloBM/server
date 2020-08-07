@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const mysql = require("mysql");
-var cors = require('cors');
+var cors = require("cors");
 
-app.use(cors())
+app.use(cors());
 
 const pool = mysql.createPool({
   connectionLimit: 10,
@@ -19,7 +19,8 @@ app.get("/", (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  const testeQuery = "SELECT * FROM times WHERE dificulty='Easy'";
+  const { dificulty } = req.body;
+  const testeQuery = `SELECT * FROM times WHERE dificulty='${dificulty}'`;
   pool.query(testeQuery, function (err, result, fields) {
     res.send(result);
   });

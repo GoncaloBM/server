@@ -1,11 +1,27 @@
-const express = require('express')
-const app = express()
-const port = 3000
+const express = require("express");
+const app = express();
+const port = 3000;
+const mysql = require("mysql");
 
-app.get('/', (req, res) => {
-  res.send('Hello Fucking World!')
-})
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "localhost",
+  user: "root",
+  password: "Dianalopes99.",
+  database: "teste",
+});
+
+app.get("/", (req, res) => {
+  res.send("Hello Fucking World!");
+});
+
+app.get("/test", (req, res) => {
+  const testeQuery = "SELECT * FROM teste";
+  pool.query(testeQuery, function (err, result, fields) {
+    res.send(result);
+  });
+});
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
-})
+  console.log(`Example app listening at http://localhost:${port}`);
+});

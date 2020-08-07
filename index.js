@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  const testeQuery = "SELECT * FROM teste";
+  const testeQuery = "SELECT * FROM teste WHERE dificulty='Easy'";
   pool.query(testeQuery, function (err, result, fields) {
     res.send(result);
   });

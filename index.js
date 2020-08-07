@@ -1,8 +1,12 @@
 const express = require("express");
 const app = express();
-const port = 3000;
+const port = 3001;
 const mysql = require("mysql");
 var cors = require("cors");
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.json()); // support json encoded bodies
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(cors());
 
@@ -18,7 +22,8 @@ app.get("/", (req, res) => {
   res.send("Hello Fucking World!");
 });
 
-app.get("/test", (req, res) => {
+app.post("/test", (req, res) => {
+  console.log(req.body)
   const { dificulty } = req.body;
   const testeQuery = `SELECT * FROM times WHERE dificulty='${dificulty}'`;
   pool.query(testeQuery, function (err, result, fields) {

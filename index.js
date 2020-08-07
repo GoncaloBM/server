@@ -2,13 +2,16 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const mysql = require("mysql");
+var cors = require('cors');
+
+app.use(cors())
 
 const pool = mysql.createPool({
   connectionLimit: 10,
   host: "localhost",
   user: "root",
   password: "Dianalopes99.",
-  database: "teste",
+  database: "minesweeper",
 });
 
 app.get("/", (req, res) => {
@@ -16,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 app.get("/test", (req, res) => {
-  const testeQuery = "SELECT * FROM teste WHERE dificulty='Easy'";
+  const testeQuery = "SELECT * FROM times WHERE dificulty='Easy'";
   pool.query(testeQuery, function (err, result, fields) {
     res.send(result);
   });

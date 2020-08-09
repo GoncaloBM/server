@@ -24,19 +24,19 @@ app.get("/", (req, res) => {
 
 app.get("/test/:dificulty", (req, res) => {
   console.log(req.params.dificulty);
-  const testeQuery = `SELECT * FROM times WHERE dificulty='${req.params.dificulty}'`;
+  const testeQuery = `SELECT * FROM times WHERE dificulty='${req.params.dificulty}' ORDER BY time ASC `;
   pool.query(testeQuery, function (err, result, fields) {
     res.send(result);
   });
 });
 
-app.post("/minesweeper/scores"),
+app.post("/minesweeper/scores",
   (req, res) => {
     const { user, time, dificulty } = req.body;
     console.log(req.body);
 
-    const pushScoreQuery = `INSERT INTO times (user, dificulty, time) VALUES (${user},${dificulty},${time})`;
-    const getTimesQuery = `SELECT * FROM times WHERE dificulty='${dificulty}'`;
+   const pushScoreQuery = `INSERT INTO times (user, dificulty, time) VALUES ('${user}','${dificulty}',${time})`;
+    const getTimesQuery = `SELECT * FROM times WHERE dificulty='${dificulty}' ORDER BY time ASC`;
 
     pool.query(pushScoreQuery, function (err, result, fields) {
       if (err) throw err;
@@ -47,7 +47,8 @@ app.post("/minesweeper/scores"),
         res.send(result);
       });
     });
-  };
+  });
+
 
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);

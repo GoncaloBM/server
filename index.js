@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3001;
+const port = 3000;
 const mysql = require("mysql");
 var cors = require("cors");
 var bodyParser = require('body-parser');
@@ -22,10 +22,9 @@ app.get("/", (req, res) => {
   res.send("Hello Fucking World!");
 });
 
-app.post("/test", (req, res) => {
-  console.log(req.body)
-  const { dificulty } = req.body;
-  const testeQuery = `SELECT * FROM times WHERE dificulty='${dificulty}'`;
+app.get("/test/:dificulty", (req, res) => {
+  console.log(req.params.dificulty)
+  const testeQuery = `SELECT * FROM times WHERE dificulty='${req.params.dificulty}'`;
   pool.query(testeQuery, function (err, result, fields) {
     res.send(result);
   });

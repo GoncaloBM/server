@@ -18,7 +18,13 @@ const pool = mysql.createPool({
   database: "minesweeper",
 });
 
+
 app.get("/", (req, res) => {
+  res.send("Hello Fucking World!");
+console.log('doing something');
+});
+
+app.get("/teste", (req, res) => {
   res.send("Hello Fucking World!");
 });
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const port = 3001;
+const port = 3000;
 const mysql = require("mysql");
 var cors = require("cors");
 var bodyParser = require("body-parser");
@@ -61,7 +61,7 @@ app.post("/baby", function (req, res) {
   let feeders = JSON.parse(rawFile);
   feeders = req.body;
 
-  console.log(feeders)
+  console.log(feeders);
 
   fs.writeFileSync(
     "./apps/baby-feeder/baby-feeder.json",

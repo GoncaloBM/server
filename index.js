@@ -8,8 +8,9 @@ var fs = require("fs");
 const { feederDB } = require("./db/config");
 const {
   getFeeders,
-  NewFeeder,
+  newFeeder,
   regUser,
+  loginUser,
 } = require("./controllers/babyFeeder_controller");
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -86,15 +87,7 @@ app.post("/baby", function (req, res) {
 
 app.get("/babyfeeder/feeders", getFeeders);
 
-app.post("/babyfeeder/feeders", (req, res) => {
-  const { year, month, day, hour, minutes, page } = req.body;
-
-  const pushCurrentMamada = `INSERT INTO feeder (year, month, day, hour, minutes, breast, mamadas) VALUES ('${year}','${month}','${day}', '${hour}','${minutes}',"",1)`;
-  feederDB.query(pushCurrentMamada, function (err, result, fields) {
-    if (err) throw err;
-    res.send(result);
-  });
-});
+app.post("/babyfeeder/feeders", newFeeder);
 
 app.delete("/babyfeeder/feeders/:id", (req, res) => {
   console.log(req.params);
@@ -143,6 +136,8 @@ app.put("/babyfeeder/feeders/:id/comments", (req, res) => {
 });
 
 app.post("/babyfeeder/register", regUser);
+
+app.post("/babyfeeder/login", loginUser);
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

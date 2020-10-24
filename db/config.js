@@ -14,6 +14,7 @@ const feederDB = mysql.createPool({
     user: "root",
     password: "Dianalopes99.",
     database: "babyfeeder",
+    charset : 'utf8'
   });
 
   module.exports = { feederDB };

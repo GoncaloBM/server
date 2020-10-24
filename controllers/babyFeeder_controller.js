@@ -1,5 +1,7 @@
 const mysql = require("mysql");
+const bcrypt = require('bcrypt');
 const { feederDB } = require("../db/config");
+const saltRounds = 10;
 
 const getFeeders = (req, res) => {
   const { year, month, day } = req.query;
@@ -25,4 +27,22 @@ const newFeeder = (req, res) => {
   });
 };
 
-module.exports = { getFeeders, newFeeder };
+const regUser = (req, res) => {
+  const { username, password, firstName, lastName } = req.body;
+
+  bcrypt.hash(password,saltRounds,(err,hash)=> {
+    if (err) {
+      console.log(err)
+    }
+    const newUser = `INSERT INTO users (username,password,first_name,last_name) VALUES ('${username}','${hash}','${firstName}','${lastName}')`
+  
+  feederDB.query(newUser, function(err,result,fields) {
+    if (err) throw err;
+    res.send(result)
+  })
+  })
+
+  const 
+};
+
+module.exports = { getFeeders, newFeeder ,regUser};

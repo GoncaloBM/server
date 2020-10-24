@@ -9,6 +9,7 @@ const { feederDB } = require("./db/config");
 const {
   getFeeders,
   NewFeeder,
+  regUser,
 } = require("./controllers/babyFeeder_controller");
 
 app.use(bodyParser.json()); // support json encoded bodies
@@ -141,6 +142,7 @@ app.put("/babyfeeder/feeders/:id/comments", (req, res) => {
   });
 });
 
+app.post("/babyfeeder/register", regUser);
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

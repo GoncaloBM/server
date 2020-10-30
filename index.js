@@ -4,6 +4,10 @@ const port = 3001;
 const mysql = require("mysql");
 var cors = require("cors");
 var bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+const session = require("express-session");
+const passport = require("passport");
+const passportLocal = require("passport-local");
 var fs = require("fs");
 const { feederDB } = require("./db/config");
 const {
@@ -11,12 +15,42 @@ const {
   newFeeder,
   regUser,
   loginUser,
+  loginCookie,
 } = require("./controllers/babyFeeder_controller");
+const initPassportLocal = require("./db/passportConfig");
 
-app.use(bodyParser.json()); // support json encoded bodies
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cookieParser("secret"));
 
-app.use(cors());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+app.use(
+  session({
+    secret: "secret",
+    resave: true,
+    saveUninitialized: true,
+    cookie: {
+      maxAge: 1000 * 60 * 60 * 24, // 86400000 1 day
+    },
+  })
+);
+
+app.use(cookieParser("secret"));
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 const pool = mysql.createPool({
   connectionLimit: 10,
@@ -25,6 +59,8 @@ const pool = mysql.createPool({
   password: "Dianalopes99.",
   database: "minesweeper",
 });
+
+initPassportLocal();
 
 app.get("/", (req, res) => {
   res.send("Hello Fucking World!");
@@ -137,7 +173,31 @@ app.put("/babyfeeder/feeders/:id/comments", (req, res) => {
 
 app.post("/babyfeeder/register", regUser);
 
-app.post("/babyfeeder/login", loginUser);
+app.post("/babyfeeder/login", (req, res) => {
+  passport.authenticate(
+    "local",
+    function (error, user, info) {
+      if (error) throw error;
+      if (!user) {
+        res.send("No user");
+      } else {
+        req.logIn(user, (err) => {
+          const { username, first_name, last_name } = user;
+          if (err) throw err;
+          res.send({
+            username: username,
+            loggedIn: true,
+          });
+          console.log(req.user);
+        });
+      }
+    },
+    { session: true }
+  )(req, res);
+});
+
+app.get("/babyfeeder/login", loginCookie);
+
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });

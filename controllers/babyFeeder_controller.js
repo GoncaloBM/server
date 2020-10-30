@@ -1,7 +1,31 @@
 const mysql = require("mysql");
+const express = require("express");
+const app = express();
 const bcrypt = require("bcrypt");
 const { feederDB } = require("../db/config");
+const passport = require("passport");
+const passportLocal = require("passport-local");
 const saltRounds = 10;
+const session = require("express-session");
+var cors = require("cors");
+
+app.use(
+  cors({
+    origin: ["http://localhost:3000"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true,
+  })
+);
+
+app.use(
+  session({
+    key: "goncalobm",
+    secret: "claratodalinda",
+    resave: false,
+    saveUninitialized: false,
+    cookie: { expires: 3600000 },
+  })
+);
 
 const getFeeders = (req, res) => {
   const { year, month, day, username } = req.query;
@@ -50,24 +74,13 @@ const regUser = (req, res) => {
   });
 };
 
-const loginUser = (req, res) => {
-  const { username, password } = req.body;
-
-  const checkUser = `SELECT * from users WHERE username='${username}'`;
-
-  feederDB.query(checkUser, (err, result) => {
-    if (result.length > 0) {
-      bcrypt.compare(password, result[0].password, (error, response) => {
-        if (response) {
-          res.send({ loggedIn: true, username: result[0].username });
-        } else {
-          res.send({ loggedIn: false, username: "" });
-        }
-      });
-    } else {
-      res.send("No user");
-    }
-  });
+const loginCookie = (req, res) => {
+  console.log(req.user)
+  if (req.user) {
+    res.send({ loggedIn: true, username: req.user.username });
+  } else {
+    console.log('No user');
+  }
 };
 
-module.exports = { getFeeders, newFeeder, regUser, loginUser };
+module.exports = { getFeeders, newFeeder, regUser, loginCookie };
